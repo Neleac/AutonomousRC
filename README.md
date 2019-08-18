@@ -12,5 +12,4 @@ python demo.py
 
 ## Contact
 To learn more about the club or reach out to us:
-[ARC Facebook Page]
-(https://www.facebook.com/AutonomousRC/)
+[ARC Facebook Page]: https://www.facebook.com/AutonomousRC/
