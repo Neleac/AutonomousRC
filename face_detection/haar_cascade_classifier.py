@@ -18,5 +18,5 @@ class HaarCascadeClassifier:
     def classify(self, image):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         output = self.cascade_classifier.detectMultiScale( \
-            image, self.scale_factor, self.min_neighbors)
+            image, scaleFactor = self.scale_factor, minNeighbors = self.min_neighbors)
         return output
