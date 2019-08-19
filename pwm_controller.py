@@ -68,7 +68,7 @@ class PWMController:
                                 self.left_pulse, self.right_pulse)
 
         self._set_pulse(1, pulse)
-        time.sleep(1)
+        time.sleep(1e-3)
         
 
     def drive(self, throttle):
@@ -88,4 +88,4 @@ class PWMController:
                                     self.min_pulse, self.zero_pulse)
 
         self._set_pulse(0, pulse)
-        time.sleep(1)
+        time.sleep(1e-3)

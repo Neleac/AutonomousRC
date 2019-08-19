@@ -8,7 +8,7 @@ class HaarCascadeClassifier:
     #         scale_factor - ratio between each image scale
     #         min_neighbors - number of neighbors required to retain detection
     # effects: instantiates cascade classifier
-    def __init__(self, cascade_file, scale_factor = 1.3, min_neighbors = 5):
+    def __init__(self, cascade_file, scale_factor = 1.3, min_neighbors = 4):
         self.cascade_classifier = cv2.CascadeClassifier(cascade_file)
         self.scale_factor = scale_factor
         self.min_neighbors = min_neighbors
