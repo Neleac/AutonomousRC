@@ -1,5 +1,6 @@
 # Author: Brian Lee <joonl4@uw.edu>
 
+'''
 import os
 import time
 import cv2
@@ -7,17 +8,21 @@ import curses
 import numpy as np
 from picamera.array import PiRGBArray
 from picamera import PiCamera
+'''
+
+import curses
+from curses import wrapper
 
 from pwm_controller import PWMController
-
   
-
+'''
 def record(control):
     throttle = 0.0
     angle = 0.0
     camera = PiCamera()
     camera.resolution = (640, 480)
     camera.framerate = 32
+    time.sleep(1e-5)
     rawCapture = PiRGBArray(camera, size=(640, 480))
     win = curses.initscr()
     curses.noecho()
@@ -49,9 +54,9 @@ def record(control):
             break
     cv2.destroyAllWindows()
     return None    
+'''
 
-
-
+'''
 def main():
     throttle = 0.0
     angle = 0.0  
@@ -86,8 +91,31 @@ def main():
         throttle = np.clip(throttle, -1.0, 0.25)
         control.steer(angle)
         control.drive(throttle)
-        
+''' 
+
+def main(stdscr):
+    control = PWMController()
+
+    stdscr.clear()
+    stdscr.nodelay(True)
+    while True:
+        try:
+            key = stdscr.getkey()
+            if key == 'q':
+                control.drive(0)
+                control.steer(0)
+                break
+
+            if key == 'w':
+                control.drive(0.3)
+            elif key == 's':
+                control.drive(-0.3)
+        except:
+            control.drive(0)
+            pass
+
 
 if __name__ == '__main__':
-    main()
+    #main()
+    wrapper(main)
 
