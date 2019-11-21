@@ -30,9 +30,9 @@ class PWMController:
                  init_delay = 0.1,
                  left_pulse = 250,
                  right_pulse = 450,
-                 max_pulse = 255,#270
-                 min_pulse = 320,
-                 zero_pulse = 297):
+                 max_pulse = 250,
+                 min_pulse = 350,
+                 zero_pulse = 300):
 
         self.default_freq = 50
         self.pwm_scale = frequency / self.default_freq
@@ -57,6 +57,7 @@ class PWMController:
         self._set_pulse(0, zero_pulse)
         time.sleep(1)
         '''
+
     def _set_pulse(self, channel, pulse):
         self.pwm.set_pwm(channel, 0, int(pulse * self.pwm_scale))
 
@@ -82,7 +83,7 @@ class PWMController:
                                 self.left_pulse, self.right_pulse)
 
         self._set_pulse(1, pulse)
-        time.sleep(1)
+        time.sleep(1e-3)
         
 
     def drive(self, throttle):
@@ -93,7 +94,7 @@ class PWMController:
             return
 
         if throttle > 0:
-            pulse = self._map_range(np.clip(throttle, 0, 0.5),
+            pulse = self._map_range(throttle,
                                     0, MAX_THROTTLE,
                                     self.zero_pulse, self.max_pulse)
         else:
@@ -102,4 +103,4 @@ class PWMController:
                                     self.min_pulse, self.zero_pulse)
 
         self._set_pulse(0, pulse)
-        time.sleep(1)
+        time.sleep(1e-3)
