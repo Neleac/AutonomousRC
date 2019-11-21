@@ -1,5 +1,6 @@
 import time
 import Adafruit_PCA9685
+import numpy as np
 
 '''
 Representation Invariant:
@@ -8,7 +9,8 @@ Abstraction Function:
     PWMController => a pulse-width-modulation motor controller for PCA9685 boards
 '''
 class PWMController:
-
+    '''
+    # RPI
     def __init__(self,
                  address = 0x40,
                  frequency = 60,
@@ -19,10 +21,22 @@ class PWMController:
                  max_pulse = 490,
                  min_pulse = 300,
                  zero_pulse = 350):
+    '''
+    # TX2
+    def __init__(self,
+                 address = 0x40,
+                 frequency = 50,
+                 busnum = 1,
+                 init_delay = 0.1,
+                 left_pulse = 250,
+                 right_pulse = 450,
+                 max_pulse = 255,#270
+                 min_pulse = 320,
+                 zero_pulse = 297):
 
-        self.default_freq = 60
+        self.default_freq = 50
         self.pwm_scale = frequency / self.default_freq
-        self.pwm = Adafruit_PCA9685.PCA9685(address=address)
+        self.pwm = Adafruit_PCA9685.PCA9685(address=address, busnum=busnum)
         self.pwm.set_pwm_freq(frequency)
         time.sleep(init_delay)
         
@@ -31,18 +45,18 @@ class PWMController:
         self.max_pulse = max_pulse
         self.min_pulse = min_pulse
         self.zero_pulse = zero_pulse
-        
         '''
-        # send zero pulse to calibrate ESC
+        # calibrate ESC
+        print("forward")
         self._set_pulse(0, max_pulse)
         time.sleep(0.01)
+        print("reverse")
         self._set_pulse(0, min_pulse)
         time.sleep(0.01)
+        print("neutral")
         self._set_pulse(0, zero_pulse)
         time.sleep(1)
         '''
-
-    
     def _set_pulse(self, channel, pulse):
         self.pwm.set_pwm(channel, 0, int(pulse * self.pwm_scale))
 
@@ -68,18 +82,18 @@ class PWMController:
                                 self.left_pulse, self.right_pulse)
 
         self._set_pulse(1, pulse)
-        time.sleep(1e-3)
+        time.sleep(1)
         
 
     def drive(self, throttle):
         MIN_THROTTLE = -1
-        MAX_THROTTLE =  1
+        MAX_THROTTLE = 1
         if throttle < MIN_THROTTLE or throttle > MAX_THROTTLE:
             print("Throttle must be between -1 and 1")
             return
 
         if throttle > 0:
-            pulse = self._map_range(throttle,
+            pulse = self._map_range(np.clip(throttle, 0, 0.5),
                                     0, MAX_THROTTLE,
                                     self.zero_pulse, self.max_pulse)
         else:
@@ -88,4 +102,4 @@ class PWMController:
                                     self.min_pulse, self.zero_pulse)
 
         self._set_pulse(0, pulse)
-        time.sleep(1e-3)
+        time.sleep(1)
