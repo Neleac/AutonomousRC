@@ -16,7 +16,7 @@ if __name__ == '__main__':
     control.steer(-0.5)
     control.steer(-1)
     control.steer(0)
-
+    
     # gradually increase throttle
     # reverse throttle is not fully supported
     # WARNING: throttle >0.5 on Jetson car is fast as fk 
@@ -29,6 +29,3 @@ if __name__ == '__main__':
     #control.drive(0.75)
     #control.drive(1)
     control.drive(0)
-
-
-

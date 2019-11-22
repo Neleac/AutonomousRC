@@ -7,22 +7,18 @@ import numpy as np
 #from picamera.array import PiRGBArray
 #from picamera import PiCamera
 from pwm_controller import PWMController
-
-#def add_c(message):
     
-def main():
-    throttle = 0.0
-    angle = 0.0  
+
+def main(stdscr):
     control = PWMController()
-    win = curses.initscr()
-    curses.noecho()
-    curses.cbreak()
-    win.keypad(True)
+    throttle = 0.0
+    angle = 0.0
+
+    stdscr.clear()
+    stdscr.nodelay(True)
     while True:
-        os.system('clear')
-        print('SPEED %f' %(throttle))
-        print('STEER %f' %(angle))
-        txt = win.getch()
+        txt = stdscr.getch()
+        print(txt)
         if (txt == ord('q')):
             control.steer(0)
             control.drive(0)
@@ -40,6 +36,6 @@ def main():
         throttle = np.clip(throttle, -1.0, 0.25)
         control.steer(angle)
         control.drive(throttle)
-if __name__ == '__main__':
-    main()
 
+if __name__ == '__main__':
+    curses.wrapper(main)

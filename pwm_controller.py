@@ -9,7 +9,6 @@ Abstraction Function:
     PWMController => a pulse-width-modulation motor controller for PCA9685 boards
 '''
 class PWMController:
-    '''
     # RPI
     def __init__(self,
                  address = 0x40,
@@ -21,7 +20,8 @@ class PWMController:
                  max_pulse = 490,
                  min_pulse = 300,
                  zero_pulse = 350):
-    '''
+        self.default_freq = 60
+        '''
     # TX2
     def __init__(self,
                  address = 0x40,
@@ -33,8 +33,9 @@ class PWMController:
                  max_pulse = 250,
                  min_pulse = 350,
                  zero_pulse = 300):
-
         self.default_freq = 50
+        '''
+        
         self.pwm_scale = frequency / self.default_freq
         self.pwm = Adafruit_PCA9685.PCA9685(address=address, busnum=busnum)
         self.pwm.set_pwm_freq(frequency)
@@ -45,6 +46,7 @@ class PWMController:
         self.max_pulse = max_pulse
         self.min_pulse = min_pulse
         self.zero_pulse = zero_pulse
+        
         '''
         # calibrate ESC
         print("forward")
@@ -83,7 +85,7 @@ class PWMController:
                                 self.left_pulse, self.right_pulse)
 
         self._set_pulse(1, pulse)
-        time.sleep(1e-3)
+        time.sleep(1)
         
 
     def drive(self, throttle):
@@ -103,4 +105,4 @@ class PWMController:
                                     self.min_pulse, self.zero_pulse)
 
         self._set_pulse(0, pulse)
-        time.sleep(1e-3)
+        time.sleep(1)
