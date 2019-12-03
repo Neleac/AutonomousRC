@@ -37,9 +37,10 @@ def main(stdscr):
         img = np.asanyarray(img)
         depth = frame.get_depth_frame().as_frame().get_data()
         depth = np.asanyarray(depth)
+        depth = cv2.resize(depth, (640, 480), interpolation=cv2.INTER_AREA)
 
         frame_count += 1
-        cv2.imwrite(DATA_PATH + 'images/' + str(frame_count) + '.jpg', cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        cv2.imwrite(DATA_PATH + 'images/' + str(frame_count) + '.jpg', cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
         cv2.imwrite(DATA_PATH + 'depth/' + str(frame_count) + '.jpg', depth)
         csv_writer.writerow([throttle, angle])
 
