@@ -3,6 +3,7 @@
 import sys
 sys.path.append("..")
 
+import csv
 import cv2
 import numpy as np
 #import pyrealsense2 as rs
@@ -11,11 +12,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import transforms
 
-from model import CaeLeNet
+from model import CaeLeNet, Darknet, DarkLSTM
 #from pwm_controller import PWMController
 
 def main(model_path, video_path = None, depth_path = None):
-    device = torch.device("cuda")
+    csv_file = open('/home/wangc21/Desktop/lstm.csv', mode='w')
+    csv_writer = csv.writer(csv_file, delimiter=',')
 
     if video_path:
         vid_cap = cv2.VideoCapture(video_path)
@@ -24,7 +26,8 @@ def main(model_path, video_path = None, depth_path = None):
         pipeline = rs.pipeline()
         pipeline.start()
 
-    model = CaeLeNet().to(device)
+    device = torch.device("cuda")
+    model = DarkLSTM().to(device)
     model.load_model(model_path)
 
     #control = PWMController()
@@ -48,7 +51,7 @@ def main(model_path, video_path = None, depth_path = None):
         depth = transforms.ToTensor()(depth)
         input_data = torch.cat((img, depth)).unsqueeze(0).to(device)
         output = model(input_data)
-        print(output)
+        csv_writer.writerow([output[0][0].item(), output[0][1].item()])
     
     if video_path:
         vid_cap.release()
@@ -57,7 +60,7 @@ def main(model_path, video_path = None, depth_path = None):
         pipeline.stop()
 
 if __name__ == '__main__':
-    model_path = '/home/wangc21/datasets/ARC/right_loop/baseline/035.pt'
+    model_path = '/home/wangc21/datasets/ARC/right_loop/lstm/033.pt'
     video_path = '/home/wangc21/datasets/ARC/right_loop/val/video.mp4'
     depth_path = '/home/wangc21/datasets/ARC/right_loop/val/depth.mp4'
     main(model_path, video_path, depth_path)
